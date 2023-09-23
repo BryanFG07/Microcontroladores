@@ -1,0 +1,231 @@
+/*
+	* Practica 04
+	* Bryan Alberto Flores García, 1866566
+	* Tadeo Felipe Acosta Ibañez, 2078068
+*/ 
+
+#include <avr/io.h>
+#define F_CPU 16000000UL
+#include <util/delay.h>
+
+//Outputs
+#define DISPLAY_DDRX_SEG_AD DDRD
+#define DISPLAY_PORTX_SEG_AD PORTD
+#define DISPLAY_DDRX_SEG_EG DDRB 
+#define DISPLAY_PORTX_SEG_EG PORTB
+#define DISPLAY_SEG_A PORTD4
+#define DISPLAY_SEG_A_ON DISPLAY_PORTX_SEG_AD |= (1 << DISPLAY_SEG_A)
+#define DISPLAY_SEG_A_OFF DISPLAY_PORTX_SEG_AD &= ~(1 << DISPLAY_SEG_A)
+#define DISPLAY_SEG_B PORTD5
+#define DISPLAY_SEG_B_ON DISPLAY_PORTX_SEG_AD |= (1 << DISPLAY_SEG_B)
+#define DISPLAY_SEG_B_OFF DISPLAY_PORTX_SEG_AD &= ~(1 << DISPLAY_SEG_B)
+#define DISPLAY_SEG_C PORTD6
+#define DISPLAY_SEG_C_ON DISPLAY_PORTX_SEG_AD |= (1 << DISPLAY_SEG_C)
+#define DISPLAY_SEG_C_OFF DISPLAY_PORTX_SEG_AD &= ~(1 << DISPLAY_SEG_C)
+#define DISPLAY_SEG_D PORTD7
+#define DISPLAY_SEG_D_ON DISPLAY_PORTX_SEG_AD |= (1 << DISPLAY_SEG_D)
+#define DISPLAY_SEG_D_OFF DISPLAY_PORTX_SEG_AD &= ~(1 << DISPLAY_SEG_D)
+#define DISPLAY_SEG_E PORTB0
+#define DISPLAY_SEG_E_ON DISPLAY_PORTX_SEG_EG |= (1 << DISPLAY_SEG_E)
+#define DISPLAY_SEG_E_OFF DISPLAY_PORTX_SEG_EG &= ~(1 << DISPLAY_SEG_E)
+#define DISPLAY_SEG_F PORTB1
+#define DISPLAY_SEG_F_ON DISPLAY_PORTX_SEG_EG |= (1 << DISPLAY_SEG_F)
+#define DISPLAY_SEG_F_OFF DISPLAY_PORTX_SEG_EG &= ~(1 << DISPLAY_SEG_F)
+#define DISPLAY_SEG_G PORTB2
+#define DISPLAY_SEG_G_ON DISPLAY_PORTX_SEG_EG |= (1 << DISPLAY_SEG_G)
+#define DISPLAY_SEG_G_OFF DISPLAY_PORTX_SEG_EG &= ~(1 << DISPLAY_SEG_G)
+//Inputs
+#define BTN_DDRX DDRB
+#define BTN_PINX PINB
+#define BTN0 PINB4
+#define BTN0_READ BTN_PINX & (1 << BTN0)
+
+#define RETARDO 500
+
+void init_ports(void);
+void display_show(uint8_t);
+
+
+int main(void)	
+{
+	init_ports();
+	uint8_t i=0;
+    while (1) 
+    {
+		if(!(BTN0_READ)){
+			display_show(i);
+			if(i==15){
+				i=0;
+				}else{
+				i++;
+			}
+			_delay_ms(RETARDO);
+		}
+    }
+}
+void init_ports(void){
+	//outputs
+	DISPLAY_DDRX_SEG_AD |= (1 << DISPLAY_SEG_A);
+	DISPLAY_DDRX_SEG_AD |= (1 << DISPLAY_SEG_B);
+	DISPLAY_DDRX_SEG_AD |= (1 << DISPLAY_SEG_C);
+	DISPLAY_DDRX_SEG_AD |= (1 << DISPLAY_SEG_D);
+	DISPLAY_DDRX_SEG_EG |= (1 << DISPLAY_SEG_E);
+	DISPLAY_DDRX_SEG_EG |= (1 << DISPLAY_SEG_F);
+	DISPLAY_DDRX_SEG_EG |= (1 << DISPLAY_SEG_G);
+	
+	//inputs
+	BTN_DDRX &= ~(1 << BTN0);	
+}
+void display_show(uint8_t i){
+	switch (i){
+		case 0:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_OFF;
+		break;
+		case 1:
+			DISPLAY_SEG_A_OFF;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_OFF;
+			DISPLAY_SEG_E_OFF;
+			DISPLAY_SEG_F_OFF;
+			DISPLAY_SEG_G_OFF;
+		break;
+		case 2:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_OFF;
+			DISPLAY_SEG_F_OFF;
+			DISPLAY_SEG_G_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_D_ON;
+		break;
+		case 3:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_OFF;
+			DISPLAY_SEG_F_OFF;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 4:
+			DISPLAY_SEG_A_OFF;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_OFF;
+			DISPLAY_SEG_E_OFF;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 5:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_OFF;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_OFF;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 6:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_OFF;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 7:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_OFF;
+			DISPLAY_SEG_E_OFF;
+			DISPLAY_SEG_F_OFF;
+			DISPLAY_SEG_G_OFF;
+		break;
+		case 8:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 9:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_OFF;
+			DISPLAY_SEG_E_OFF;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 10:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_OFF;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 11:
+			DISPLAY_SEG_A_OFF;
+			DISPLAY_SEG_B_OFF;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 12:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_OFF;
+			DISPLAY_SEG_C_OFF;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_OFF;
+		break;
+		case 13:
+			DISPLAY_SEG_A_OFF;
+			DISPLAY_SEG_B_ON;
+			DISPLAY_SEG_C_ON;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_OFF;
+			DISPLAY_SEG_G_ON;
+		break;
+		case 14:
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_OFF;
+			DISPLAY_SEG_C_OFF;
+			DISPLAY_SEG_D_ON;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		
+		break;
+		case 15:	
+			DISPLAY_SEG_A_ON;
+			DISPLAY_SEG_B_OFF;
+			DISPLAY_SEG_C_OFF;
+			DISPLAY_SEG_D_OFF;
+			DISPLAY_SEG_E_ON;
+			DISPLAY_SEG_F_ON;
+			DISPLAY_SEG_G_ON;
+		break;
+		default:
+		break;
+	}
+	
+}
+
